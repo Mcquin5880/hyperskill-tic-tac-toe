@@ -3,16 +3,65 @@ import java.util.Scanner;
 public class TicTacToe {
 
     public static void main(String[] args) {
+
         Scanner sc = new Scanner(System.in);
-        String gameState = sc.nextLine();
+        char[][] grid = initializeGrid(sc.nextLine());
+
+        printGrid(grid);
+        processPlayerMove(grid, sc);
+        printGrid(grid);
+    }
+
+    private static char[][] initializeGrid(String gameState) {
+
+        char[][] grid = new char[3][3];
+        for (int row = 0; row < 3; row++) {
+            for (int col = 0; col < 3; col++) {
+                char c = gameState.charAt(row * 3 + col);
+                grid[row][col] = c;
+            }
+        }
+        return grid;
+    }
+
+    private static void printGrid(char[][] grid) {
 
         System.out.println("---------");
-        for (int i = 0; i < 9; i += 3) {
-            System.out.printf("| %c %c %c |%n", gameState.charAt(i), gameState.charAt(i + 1), gameState.charAt(i + 2));
+        for (int row = 0; row < grid.length; row++) {
+            System.out.print("| ");
+            for (int col = 0; col < grid[row].length; col++) {
+                System.out.print(grid[row][col] + " ");
+            }
+            System.out.println("|");
         }
         System.out.println("---------");
+    }
 
-        System.out.println(analyzeGame(gameState));
+    private static void processPlayerMove(char[][] grid, Scanner sc) {
+
+        boolean validMove = false;
+        while (!validMove) {
+
+            int row;
+            int col;
+            try {
+                row = sc.nextInt();
+                col = sc.nextInt();
+            } catch (Exception e) {
+                System.out.println("You should enter numbers!");
+                sc.nextLine(); // discard invalid input
+                continue;
+            }
+
+            if (row < 1 || row > 3 || col < 1 || col > 3) {
+                System.out.println("Coordinates should be from 1 to 3!");
+            } else if (grid[row - 1][col - 1] != '_') {
+                System.out.println("This cell is occupied! Choose another one!");
+            } else {
+                grid[row - 1][col - 1] = 'X';
+                validMove = true;
+            }
+        }
     }
 
     private static String analyzeGame(String gameState) {
